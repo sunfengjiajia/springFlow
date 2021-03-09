@@ -28,24 +28,17 @@ public class MainController {
     @Autowired
     private ConcreteContext context;
 
-    @Autowired
-    private ConcreteAnotherContext anotherContext;
+    //在这里定义了另外一组流程，也就是springFlow支持项目中有多种流程
+//    @Autowired
+//    private ConcreteAnotherContext anotherContext;
 
     @RequestMapping("test")
     @ResponseBody
     public FlowResult main(String state, String flag) {
         //默认ids, 正式应用时，应该是前端传过来
         List<String> ids = Arrays.asList("aa1");
-        FlowResult flowResult = new FlowResult();
-        FlowResult flowResult1 = new FlowResult();
-        try {
-            flowResult = context.setMedordState(ids, flag, state);
-            flowResult1 = anotherContext.setMedordState(ids, flag, state);
-        } catch (Exception e) {
-            String message = e.getMessage();
-            flowResult.getErrorList().add(message);
-            return flowResult;
-        }
+        FlowResult flowResult = context.setMedordState(ids, flag, state);
+//        FlowResult flowResult1 = anotherContext.setMedordState(ids, flag, state);
 
         return flowResult;
     }

@@ -76,13 +76,23 @@ public abstract class Context {
      * @author 孙丰佳
      * @time 2021-02-02 11:32
      */
-    public FlowResult setMedordState(List<String> ids, String flag, String state) throws Exception {
+    public FlowResult setMedordState(List<String> ids, String flag, String state) {
+        this.result = new FlowResult();
+        try {
+            doSetMedordState(ids, flag, state);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.addErrorMsg(e.getMessage());
+        }
+        return this.result;
+    }
+
+    public void doSetMedordState(List<String> ids, String flag, String state) throws Exception {
         try {
             this.setStateFlowCache();
         } catch (Exception e) {
             throw new RuntimeException("服务器内部错误");
         }
-        result = new FlowResult();
         for (String id : ids) {
             //这里从数据库根据id取当前的状态state
             ICurrentStateDto currentStateDto = this.getCurrentState(id);
@@ -107,17 +117,16 @@ public abstract class Context {
                 //先根据医嘱id，获取明细list，找到最新的状态dt赋值到flow中
                 List<IRollbackTrailDto> rollbackTrailList = getRollbackTrailList(id);
                 if (rollbackTrailList.size()==0) {
-                    throw new Exception("未找到历史轨迹");
+                    throw new RuntimeException("未找到历史轨迹");
                 }
                 //痕迹list，有可能用到
                 this.stateFlow.setRollbackTrailDtoList(rollbackTrailList);
 
                 this.rollback(rollbackTrailList.get(0).getState());
             } else {
-                throw new Exception("参数不正常");
+                throw new RuntimeException("参数不正常");
             }
         }
-        return this.result;
     }
     //根据id获取当前状态
     protected abstract ICurrentStateDto getCurrentState(String id);
