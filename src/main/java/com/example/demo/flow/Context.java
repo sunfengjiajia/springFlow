@@ -87,7 +87,7 @@ public abstract class Context {
         return this.result;
     }
 
-    public void doSetMedordState(List<String> ids, String flag, String state) throws Exception {
+    private void doSetMedordState(List<String> ids, String flag, String state) throws Exception {
         try {
             this.setStateFlowCache();
         } catch (Exception e) {
