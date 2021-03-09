@@ -31,17 +31,11 @@ public abstract class Context {
 
     protected Map<String, StateFlow> stateCache = new HashMap<>();
 
-
-
     //定义一个当前状态
     StateFlow stateFlow;
 
     //遇到复杂逻辑时，需要保留的参数
     Map para;
-
-    public void setPara(Map para) {
-        this.para = para;
-    }
 
     //显式的让子类继承，返回stateFlow实现的标识名@StateService的type属性
     //原因：如果一个项目有多个流程，需要设计一个标识，作为区分不同流程的标识
@@ -70,41 +64,55 @@ public abstract class Context {
     /** @Title: setMedordState
      * @Description: 环境类主要逻辑
      * @param ids
-     * @param flag
      * @param state    设定文件
      * @return void    返回类型
      * @author 孙丰佳
      * @time 2021-02-02 11:32
      */
-    public FlowResult setMedordState(List<String> ids, String flag, String state) {
+    public FlowResult setMedordState(List<String> ids, String state) {
+        return setMedordState(ids, state, null);
+    }
+
+    public FlowResult setMedordState(List<String> ids, String state, String flag) {
         this.result = new FlowResult();
         try {
             doSetMedordState(ids, flag, state);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             this.addErrorMsg(e.getMessage());
         }
         return this.result;
+    }
+
+    public FlowResult setMedordState(List<String> ids, String state, String flag, Map para) {
+        if (!ObjectUtils.isEmpty(para)) {
+            this.para = para;
+        } else {
+            this.para = new HashMap();
+        }
+        return setMedordState(ids, state, flag);
     }
 
     private void doSetMedordState(List<String> ids, String flag, String state) throws Exception {
         try {
             this.setStateFlowCache();
         } catch (Exception e) {
-            throw new RuntimeException("服务器内部错误");
+            this.addErrorMsg("服务器内部错误");
         }
         for (String id : ids) {
             //这里从数据库根据id取当前的状态state
             ICurrentStateDto currentStateDto = this.getCurrentState(id);
             if (ObjectUtils.isEmpty(currentStateDto) || ObjectUtils.isEmpty(currentStateDto.get())) {
-                throw new RuntimeException("没有找到这个对象:" + id);
+                this.addErrorMsg("没有找到这个对象:" + id);
+                continue;
             }
             StateFlow stateFlow = stateCache.get(currentStateDto.getState());
             if (null == stateFlow) {
-                throw new NoSuchElementException("容器中没有这个处理器");
+                this.addErrorMsg("容器中没有状态为" + currentStateDto.getState() + "的处理器");
+                continue;
             }
             this.stateFlow = stateFlow;
-            this.stateFlow.setPara(para);
+            this.stateFlow.setPara(this.para);
             this.stateFlow.setContext(this);
             this.stateFlow.setCurrentStateDto(currentStateDto);
 
@@ -128,6 +136,7 @@ public abstract class Context {
             }
         }
     }
+
     //根据id获取当前状态
     protected abstract ICurrentStateDto getCurrentState(String id);
 

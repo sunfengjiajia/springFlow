@@ -26,61 +26,16 @@ public abstract class StateFlow extends IStateFlow {
 
 
     //下一步
-    abstract void forward() throws Exception;
+    public abstract void forward() throws Exception;
 
     //检查是否允许走下一步
-    abstract boolean checkForwardAllow();
+    public abstract boolean checkForwardAllow();
 
     //回滚
-    abstract void rollback() throws Exception;
+    public abstract void rollback() throws Exception;
 
     //检查是否允许回滚下一步
-    abstract boolean checkRollbackAllow();
-
-    protected String getTargetState() {
-        return targetState;
-    }
-
-    void setTargetState(String targetState) {
-        this.targetState = targetState;
-    }
-
-    protected Map getPara() {
-        return para;
-    }
-
-    
-    void setPara(Map para) {
-        this.para = para;
-    }
-
-    
-    protected ICurrentStateDto getCurrentStateDto() {
-        return currentStateDto;
-    }
-
-    
-    void setCurrentStateDto(ICurrentStateDto currentStateDto) {
-        this.currentStateDto = currentStateDto;
-    }
-
-    
-    protected List<IRollbackTrailDto> getRollbackTrailDtoList() {
-        return rollbackTrailDtoList;
-    }
-
-    
-    void setRollbackTrailDtoList(List<IRollbackTrailDto> rollbackTrailDtoList) {
-        this.rollbackTrailDtoList = rollbackTrailDtoList;
-    }
-
-    protected Context getContext() {
-        return context;
-    }
-
-    void setContext(Context context) {
-        this.context = context;
-    }
+    public abstract boolean checkRollbackAllow();
 
     protected boolean addSuccessMsg(String msg) {
         return this.context.addSuccessMsg(msg);
@@ -88,5 +43,45 @@ public abstract class StateFlow extends IStateFlow {
 
     protected boolean addErrorMsg(String msg) {
         return this.context.addErrorMsg(msg);
+    }
+
+    public String getTargetState() {
+        return targetState;
+    }
+
+    public void setTargetState(String targetState) {
+        this.targetState = targetState;
+    }
+
+    public Map getPara() {
+        return para;
+    }
+
+    public void setPara(Map para) {
+        this.para = para;
+    }
+
+    public ICurrentStateDto getCurrentStateDto() {
+        return currentStateDto;
+    }
+
+    public void setCurrentStateDto(ICurrentStateDto currentStateDto) {
+        this.currentStateDto = currentStateDto;
+    }
+
+    public List<IRollbackTrailDto> getRollbackTrailDtoList() {
+        return rollbackTrailDtoList;
+    }
+
+    public void setRollbackTrailDtoList(List<IRollbackTrailDto> rollbackTrailDtoList) {
+        this.rollbackTrailDtoList = rollbackTrailDtoList;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

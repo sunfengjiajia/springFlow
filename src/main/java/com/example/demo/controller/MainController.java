@@ -8,12 +8,15 @@ import com.example.demo.service.ConcreteContext;
 import com.sun.xml.internal.fastinfoset.algorithm.FloatEncodingAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 孙丰佳
@@ -34,10 +37,10 @@ public class MainController {
 
     @RequestMapping("test")
     @ResponseBody
-    public FlowResult main(String state, String flag) {
+    public FlowResult main(String state, String flag, String para) {
         //默认ids, 正式应用时，应该是前端传过来
-        List<String> ids = Arrays.asList("aa1");
-        FlowResult flowResult = context.setMedordState(ids, flag, state);
+        List<String> ids = Arrays.asList("aa");
+        FlowResult flowResult = context.setMedordState(ids, state, flag);
 //        FlowResult flowResult1 = anotherContext.setMedordState(ids, flag, state);
 
         return flowResult;
